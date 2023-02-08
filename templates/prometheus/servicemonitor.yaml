@@ -1,0 +1,22 @@
+{{- if .Values.metrics.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "atoman.fullname" . }}
+  namespace: monitoring
+  labels:
+    prometeus: monitoring
+spec:
+  jobLabel: atoman-metrics
+  namespaceSelector:
+    matchNames:
+    - "{{ $.Release.Namespace }}"
+  selector:
+    matchLabels:
+      prometheus: {{ include "atoman.fullname" . }} 
+  endpoints:
+  - interval: 15s
+    path: /metrics
+    port: http
+{{- end }}
+---

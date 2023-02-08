@@ -1,0 +1,48 @@
+#
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ocelot-storage
+data:
+  ocelot.storage.api.json: |-
+    {
+        "Routes": 
+        [
+        {
+            "DownstreamPathTemplate": "/api/DocumentFile",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+            {
+            "Host": "{{ .Values.storage.name }}",
+            "Port": {{ .Values.storage.service.port }}
+            }
+            ],
+            "UpstreamPathTemplate": "/api/DocumentFile",
+            "UpstreamHttpMethod": [ "POST" ]
+        },
+        {
+            "DownstreamPathTemplate": "/api/DocumentFile/{everything}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+            {
+            "Host": "{{ .Values.storage.name }}",
+            "Port": {{ .Values.storage.service.port }}
+            }
+            ],
+            "UpstreamPathTemplate": "/api/DocumentFile/{everything}",
+            "UpstreamHttpMethod": [ "POST", "PUT", "GET" ]
+        },      
+        {
+            "DownstreamPathTemplate": "/api/Log/{everything}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+            {
+            "Host": "{{ .Values.storage.name }}",
+            "Port": {{ .Values.storage.service.port }}
+            }
+            ],
+            "UpstreamPathTemplate": "/api/Log/{everything}",
+            "UpstreamHttpMethod": [ "POST", "PUT", "GET" ]
+        }
+        ]
+    }

@@ -1,0 +1,89 @@
+gateway:
+  name: gateway-service
+  image:
+    repository: flipmachin1001/atomanapigateway
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8000
+  replicaCount: 1
+
+storage:
+  name: storage-service
+  enabled: true
+  image:
+    repository: flipmachin1001/atomanfilestorage
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8000
+  replicaCount: 1
+
+auth:
+  name: auth-service
+  enabled: true
+  image:
+    repository: flipmachin1001/atomanauth
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8000
+  replicaCount: 1
+
+cars:
+  name: cars-service
+  enabled: true
+  image:
+    repository: flipmachin1001/atomancars
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8000
+  replicaCount: 1
+
+mssql:
+  userName: MicroReader
+  password: "654321"
+  expressDbName: Express
+  server: db0.major-express.ru
+
+postgresql:
+  enabled: true
+  postgresqlUsername: postgreadmin
+  postgresqlPassword: "123123"
+  storageDbName: Atoman.Files
+  authDbName: Atoman.Auth
+  carsDbName: Atoman.CarInfo
+  logsDbName: Atoman.Logs
+  metrics:
+    eneabled: true
+  service:
+    port: "5432"
+  persistence:
+    storageClass: local-storage
+
+redis:
+  global:
+    storageClass: "local-storage"
+    redis:
+      user: user
+      password: "123123"
+      port: "6379" 
+  
+ingress:
+    enabled: true
+    atomanHost: "atoman.major-express.ru"
+
+prometheus:  
+    enabled: true
+    graphana:
+        adminPassword: "123123"
+
+metrics:
+  serviceMonitor:
+    enabled: true
+    

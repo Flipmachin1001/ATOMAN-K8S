@@ -1,0 +1,55 @@
+#хранилище
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: storage-deployment
+  labels:
+    app: storage
+     #Метка для того чтобы сервис монитор прометея находил под
+    prometheus: {{ include "atoman.fullname" . }}
+spec:
+  replicas: {{ .Values.storage.replicaCount }}   
+  selector:
+    matchLabels:
+      app: storage
+  template:
+    metadata:
+      labels:
+        app: storage
+        name: {{ include "atoman.fullname" . }}
+    spec:
+      containers:
+        - name: storage
+          image: "{{ .Values.storage.image.repository }}:{{ .Values.storage.image.tag | default .Chart.AppVersion }}"
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /hc
+              port: 8000
+          readinessProbe:
+            httpGet:
+              path: /hc
+              port: 8000
+          env:
+          - name: DB_STORAGE_URI
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: DB_STORAGE_URI
+          - name: DB_LOGS_URI
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: DB_LOGS_URI
+          volumeMounts:
+          - name: configmap-volume
+            mountPath: "/app/appsettings.json"
+            subPath: appsettings.json
+            readOnly: true
+      volumes:
+      - name: configmap-volume
+        configMap:
+          name: api-configmap

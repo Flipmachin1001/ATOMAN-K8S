@@ -1,0 +1,88 @@
+#Пользователи
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-deployment
+  labels:
+    app: gateway
+    name: {{ include "atoman.fullname" . }}
+     #Метка для того чтобы сервис монитор прометея находил под
+    prometheus: {{ include "atoman.fullname" . }}
+spec:
+  replicas: {{ .Values.gateway.replicaCount }}   
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+        name: {{ include "atoman.fullname" . }}
+    spec:
+      containers:
+        - name: gateway
+          image: "{{ .Values.gateway.image.repository }}:{{ .Values.gateway.image.tag | default .Chart.AppVersion }}"
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: https
+              containerPort: 443
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+          volumeMounts:
+          - name: appsettings
+            mountPath: "/app/appsettings.json"
+            subPath: appsettings.json
+            readOnly: true
+          - name: ocelot-auth
+            mountPath: "/app/Routes/ocelot.auth.api.json"
+            subPath: ocelot.auth.api.json
+            readOnly: true
+          - name: ocelot-cars
+            mountPath: "/app/Routes/ocelot.cars.api.json"
+            subPath: ocelot.cars.api.json
+            readOnly: true
+          - name: ocelot-storage
+            mountPath: "/app/Routes/ocelot.storage.api.json"
+            subPath: ocelot.storage.api.json
+            readOnly: true
+          - name: ocelot-swagger
+            mountPath: "/app/Routes/ocelot.SwaggerEndPoints.json"
+            subPath: ocelot.SwaggerEndPoints.json
+            readOnly: true
+          - name: ocelot-global
+            mountPath: "/app/Routes/ocelot.global.json"
+            subPath: ocelot.global.json
+            readOnly: true
+
+      volumes:
+      - name: appsettings
+        configMap:
+          name: api-configmap
+
+      - name: ocelot-auth
+        configMap:
+          name: ocelot-auth
+
+      - name: ocelot-cars
+        configMap:
+          name: ocelot-cars
+
+      - name: ocelot-storage
+        configMap:
+          name: ocelot-storage
+
+      - name: ocelot-swagger
+        configMap:
+          name: ocelot-swagger
+      - name: ocelot-global
+        configMap:
+          name: ocelot-global

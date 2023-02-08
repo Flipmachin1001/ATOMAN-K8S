@@ -1,0 +1,44 @@
+#
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ocelot-swagger
+data:
+  ocelot.SwaggerEndPoints.json: |-
+    {
+      "SwaggerEndPoints": [
+        {
+          "Key": "cars",
+          "TransformByOcelotConfig": false,
+          "Config": [
+            {
+              "Name": "Cars and Acts",
+              "Version": "1.0",
+              "Url": "http://{{ .Values.cars.name }}/swagger/v1/swagger.json"
+            }
+          ]
+        },
+        {
+          "Key": "auth",
+          "TransformByOcelotConfig": false,
+          "Config": [
+            {
+              "Name": "Auth and Users",
+              "Version": "1.0",
+              "Url": "http://{{ .Values.auth.name }}/swagger/v1/swagger.json"
+            }
+          ]
+        },
+        {
+          "Key": "storage",
+          "TransformByOcelotConfig": false,
+          "Config": [
+            {
+              "Name": "Storage",
+              "Version": "1.0",
+              "Url": "http://{{ .Values.storage.name }}/swagger/v1/swagger.json"
+            }
+          ]
+        }
+      ]
+    }

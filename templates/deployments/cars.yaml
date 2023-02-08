@@ -1,0 +1,61 @@
+#хранилище
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cars-deployment
+  labels:
+    app: cars
+    name: {{ include "atoman.fullname" . }}
+     #Метка для того чтобы сервис монитор прометея находил под
+    prometheus: {{ include "atoman.fullname" . }}
+spec:
+  replicas: {{ .Values.cars.replicaCount }}   
+  selector:
+    matchLabels:
+      app: cars
+  template:
+    metadata:
+      labels:
+        app: cars
+        name: {{ include "atoman.fullname" . }}
+    spec:
+      containers:
+        - name: cars
+          image: "{{ .Values.cars.image.repository }}:{{ .Values.cars.image.tag | default .Chart.AppVersion }}"
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /hc
+              port: 8000
+          readinessProbe:
+            httpGet:
+              path: /hc
+              port: 8000
+          env:
+          - name: DB_CARS_URI
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: DB_CARS_URI
+          - name: DB_EXPRESS_URI
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: DB_EXPRESS_URI
+          - name: REDIS_URI
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: REDIS_URI
+          volumeMounts:
+          - name: configmap-volume
+            mountPath: "/app/appsettings.json"
+            subPath: appsettings.json
+            readOnly: true
+      volumes:
+      - name: configmap-volume
+        configMap:
+          name: api-configmap

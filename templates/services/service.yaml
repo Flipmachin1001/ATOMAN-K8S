@@ -1,0 +1,76 @@
+#Оплата
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.storage.name }}
+  labels:
+    name: {{ include "atoman.fullname" . }}
+     #Метка для того чтобы сервис монитор прометея находил под
+    prometheus: {{ include "atoman.fullname" . }}
+spec:
+  type: {{ .Values.storage.service.type }}
+  ports:
+     - name: http
+       port: {{ .Values.storage.service.port }}
+       protocol: TCP
+       targetPort: {{ .Values.storage.service.targetPort }}
+  selector:
+    app: storage
+---
+#AUTH
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.auth.name }}
+  labels:
+    name: {{ include "atoman.fullname" . }}
+     #Метка для того чтобы сервис монитор прометея находил под
+    prometheus: {{ include "atoman.fullname" . }}
+spec:
+  type: {{ .Values.auth.service.type }}
+  ports:
+     - name: http
+       port: {{ .Values.auth.service.port }}
+       protocol: TCP
+       targetPort: {{ .Values.auth.service.targetPort }}
+  selector:
+    app: auth
+---
+#CARS
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.cars.name }}
+  labels:
+    name: {{ include "atoman.fullname" . }}
+     #Метка для того чтобы сервис монитор прометея находил под
+    prometheus: {{ include "atoman.fullname" . }}
+spec:
+  type: {{ .Values.cars.service.type }}
+  ports:
+     - name: http
+       port: {{ .Values.cars.service.port }}
+       protocol: TCP
+       targetPort: {{ .Values.cars.service.targetPort }}
+  selector:
+    app: cars
+---
+#GATEWAY
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.gateway.name }}
+  labels:
+    name: {{ include "atoman.fullname" . }}
+     #Метка для того чтобы сервис монитор прометея находил под
+    prometheus: {{ include "atoman.fullname" . }}
+spec:
+  type: {{ .Values.gateway.service.type }}
+  ports:
+     - name: http
+       port: {{ .Values.gateway.service.port }}
+       protocol: TCP
+       targetPort: {{ .Values.gateway.service.targetPort }}
+  selector:
+    app: gateway
+---

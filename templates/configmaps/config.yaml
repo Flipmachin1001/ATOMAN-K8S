@@ -1,0 +1,23 @@
+#
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-configmap
+data:
+  appsettings.json: |-
+    {
+      "Logging": {
+        "LogLevel": {
+          "Default": "Information",
+          "Microsoft": "Warning",
+          "Microsoft.Hosting.Lifetime": "Information"
+        }
+      },
+      "AllowedHosts": "*",
+      "JWT": {
+        "JWT_Issuer": "Atoman",
+        "JWT_Key": "AtomanSecretKeya66516e6db6f85b00cecd46e3430178d",
+        "JWT_Audience": "Atoman"
+      }
+    }
+  

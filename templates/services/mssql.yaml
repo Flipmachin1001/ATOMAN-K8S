@@ -1,0 +1,7 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: mssql-db0
+spec:
+  type: ExternalName
+  externalName: db0.major-express.ru

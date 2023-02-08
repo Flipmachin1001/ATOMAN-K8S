@@ -1,0 +1,13 @@
+#
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ocelot-global
+data:
+  ocelot.global.json: |-
+    {
+        "GlobalConfiguration": 
+        {
+            "BaseUrl": "http://{{ .Values.ingress.host }}"
+        }
+    }

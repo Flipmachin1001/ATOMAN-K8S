@@ -1,0 +1,23 @@
+#
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ocelot-auth
+data:
+  ocelot.auth.api.json: |-
+    {
+        "Routes": [
+        {
+        "DownstreamPathTemplate": "/api/Auth/{everything}",
+        "DownstreamScheme": "http",
+        "DownstreamHostAndPorts": [
+            {
+                "Host": "{{ .Values.auth.name }}",
+                "Port": {{ .Values.auth.service.port }}
+            }
+        ],
+        "UpstreamPathTemplate": "/api/Auth/{everything}",
+        "UpstreamHttpMethod": [ "POST", "PUT", "GET" ]
+        }
+        ]
+    }
