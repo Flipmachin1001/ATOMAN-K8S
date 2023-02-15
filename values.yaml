@@ -64,16 +64,24 @@ postgresql:
   service:
     port: "5432"
   persistence:
-    storageClass: local-storage
+    storageClass: csi-rbd-sc
+    accessModes:
+    - ReadWriteMany
+    size: 1Gi
 
 redis:
   global:
-    storageClass: "local-storage"
+    size: 1Gi
     redis:
       user: user
       password: "123123"
-      port: "6379" 
-  
+      port: "6379"
+  master:
+    persistence:
+      storageClass: "csi-rbd-sc"
+      accessModes:
+      - ReadWriteMany
+      size: 1Gi
 ingress:
     enabled: true
     atomanHost: "atoman.major-express.ru"
